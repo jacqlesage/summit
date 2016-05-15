@@ -12,6 +12,7 @@ public class Test {
         players[1] = new TeamJAP();
         players[2] = new RollPlayer();
         players[3] = new RandomPlayer();
+        
 //        players[4] = new RollPlayer();
 //        players[5] = new HumanPlayer();
         Round r = new Round(players);

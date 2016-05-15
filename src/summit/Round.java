@@ -50,22 +50,22 @@ public class Round {
     }
 
     private int playRound() {
-        int player = s.playersRemaining.remove(0);
+        s.currentPlayer = s.playersRemaining.remove(0);
         // If everyone but the current player has folded it's like a showdown.
         if (s.playersRemaining.isEmpty()) {
-            return doShowdown(player);
+            return doShowdown(s.currentPlayer);
         }
-        Action a = players[player].takeTurn(s, dice[player]);
+        Action a = players[s.currentPlayer].takeTurn(s, dice[s.currentPlayer]);
         switch (a) {
             case ROLL:
-                doRoll(player);
-                s.playersRemaining.add(player);
+                doRoll(s.currentPlayer);
+                s.playersRemaining.add(s.currentPlayer);
                 break;
             case SHOWDOWN:
-                return doShowdown(player);
+                return doShowdown(s.currentPlayer);
             case FOLD:
             default:
-                doFold(player);
+                doFold(s.currentPlayer);
                 break;
         }
         return playRound();
@@ -88,6 +88,7 @@ public class Round {
         b /= s.playersRemaining.size();
         s.pot += b;
         s.bets[player] = -b;
+        log(new Turn(Action.FOLD, player));
     }
 
     private void doBet(int player) {
@@ -97,8 +98,11 @@ public class Round {
 
     private int doShowdown(int player) {
         doBet(player);
+        log(new Turn(Action.SHOWDOWN,player));
         for (int p : s.playersRemaining) {
+            s.currentPlayer = p;
             Action a = players[p].actAtShowdown(s, dice[p]);
+            log(new Turn(a, p));
             switch (a) {
                 case STAY:
                     break;
@@ -140,5 +144,7 @@ public class Round {
         System.out.println(turn);
         s.log.add(turn);
     }
+    
+    
 
 }

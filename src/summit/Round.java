@@ -50,11 +50,15 @@ public class Round {
     }
 
     private int playRound() {
+       
         s.currentPlayer = s.playersRemaining.remove(0);
+        
         // If everyone but the current player has folded it's like a showdown.
         if (s.playersRemaining.isEmpty()) {
             return doShowdown(s.currentPlayer);
         }
+        System.out.println(s.currentPlayer + "DDDDDD");
+        
         Action a = players[s.currentPlayer].takeTurn(s, dice[s.currentPlayer]);
         switch (a) {
             case ROLL:

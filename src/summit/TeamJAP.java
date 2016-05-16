@@ -14,6 +14,7 @@ import java.util.Scanner;
  * @author James
  */
 public class TeamJAP implements Player {
+
     private final int averageDice = 17;
     private final int bestDice = 22;
 
@@ -21,11 +22,11 @@ public class TeamJAP implements Player {
     public Action takeTurn(State s, int[] dice) {
         int temp = 0;
         int count = 0;
-        int roundsComplete =0;
+        int roundsComplete = 0;
         char x = ' ';
         boolean allRollsLess = false;
         System.out.println("Dice: " + Arrays.toString(dice));
-        
+
 //         System.out.println("+++++++++++ "+s.getCurrentPlayer());
         //get the total value of the dice
         for (int i = 0; i < dice.length; i++) {
@@ -40,62 +41,56 @@ public class TeamJAP implements Player {
         if (temp <= 14 && s.betRequired() > 0) {
             //for(int i =0; i < State)
             ArrayList<Integer> rolls = s.getRolls(0);
-    
+
         }
 
-                //end of dealing with bad dice
+        //end of dealing with bad dice
         //Deal with average and above average dice
         if (temp > 17 && s.betRequired() == 0 && temp < 22) {
             //call a showdown as the risk of letting in 
             //other players becomes worse - so S
             x = 'S';
 
-        } 
-        
-         if (temp > 22 && s.betRequired() == 0) {
+        }
+
+        if (temp > 22 && s.betRequired() == 0) {
             //Roll as we figure that are sure of a victory - we might need
             //to be carefull on how long this "rolling" goes on for ???
             x = 'R';
-        
-        }else{
-             
-             x='R';
-         }
+
+        } else {
+
+            x = 'R';
+        }
         //dealing with average dice where we are not betting first
         //and less that great dice
         if (temp > 17 && s.betRequired() > 0 && temp < 22) {
             //If all others have rolled and their rolled die is lower than our lowest ‘S’ 
             //otherwise if we are above average roll
-            for(int i = 0; i < s.getPlayersRemaining().size(); i++){
-                for(int j =0; j < s.getRolls(i).size();j++){
-                    if(Integer.parseInt(String.valueOf(s.getRolls(j))) > dice[0]){
+            for (int i = 0; i < s.getPlayersRemaining().size(); i++) {
+                for (int j = 0; j < s.getRolls(i).size(); j++) {
+                    ArrayList a = s.getRolls(i);
+                    if (Integer.parseInt(String.valueOf(a.get(j))) > dice[0]) {
+//                        System.out.println("ljklkj");
                         x = 'F';
-                    }else{
-                        x='S';
+                    } else {
+                        x = 'S';
                     }
                 }
             }
-            
-                        
+
         }
-        
-         if (temp > 22 ) {
-             x = 'R';
-         }
-      
 
-    
+        if (temp > 22) {
+            x = 'R';
+        }
+        //had to put a closing case in as I did run into the problem of it repeating with no end. 
+        if (temp > 27) {
+            x = 'S';
+        }
 
-    
-      
 
-    
-
-//        System.out.println(temp);
-//         Scanner in = new Scanner(System.in);
-//        System.out.println("R(oll), F(old), S(howdown)");
-//        String act = in.next();
-    switch (x) {
+        switch (x) {
             case 'R':
                 System.out.println("R(oll)");
                 return Action.ROLL;
@@ -110,18 +105,20 @@ public class TeamJAP implements Player {
     }
 
     @Override
-        public Action actAtShowdown(State s, int[] dice) {
+    public Action actAtShowdown(State s, int[] dice) {
         int temp = 0;
         for (int i = 0; i < dice.length; i++) {
             temp += dice[i];
 
         }
         System.out.println(temp + "&&&&");
-        if (temp <= 14) {
+        if (temp <= 19) {
             return Action.FOLD;
-        }
-
+        }else if( temp >= 20 ){
         return Action.STAY;
+        }
+        
+        return Action.FOLD;
     }
 
 }

@@ -17,43 +17,46 @@ public class TeamJAP implements Player {
 
     private final int averageDice = 17;
     private final int bestDice = 22;
+    private final int greatDice = 27;
 
     @Override
     public Action takeTurn(State s, int[] dice) {
-        int temp = 0;
-        int count = 0;
-        int roundsComplete = 0;
+        int ourRoll = 0;
         char x = ' ';
-        boolean allRollsLess = false;
-        System.out.println("Dice: " + Arrays.toString(dice));
+        int playerIndex = s.currentPlayer;
+        int playerBet = s.getBet(s.currentPlayer);
+        
+//        System.out.println("Our bet: " + playerBet);
+//        System.out.println("Dice: " + Arrays.toString(dice));
 
 //         System.out.println("+++++++++++ "+s.getCurrentPlayer());
         //get the total value of the dice
         for (int i = 0; i < dice.length; i++) {
-            temp += dice[i];
+            ourRoll += dice[i];
         }
+//         System.out.println("Total Dice: " + ourRoll);
 
         //dealing with bad dice
-        if (temp <= 14 && s.betRequired() == 0) {
+        if (ourRoll < averageDice && playerBet == 0) {
             //Call bluff
             x = 'S';
         }
-        if (temp <= 14 && s.betRequired() > 0) {
+        if (ourRoll < averageDice && playerBet > 0) {
             //for(int i =0; i < State)
-            ArrayList<Integer> rolls = s.getRolls(0);
+            x = 'F';
 
         }
 
         //end of dealing with bad dice
         //Deal with average and above average dice
-        if (temp > 17 && s.betRequired() == 0 && temp < 22) {
+        if (ourRoll > averageDice && playerBet == 0 && ourRoll < bestDice) {
             //call a showdown as the risk of letting in 
             //other players becomes worse - so S
             x = 'S';
 
         }
 
-        if (temp > 22 && s.betRequired() == 0) {
+        if (ourRoll > bestDice && playerBet == 0) {
             //Roll as we figure that are sure of a victory - we might need
             //to be carefull on how long this "rolling" goes on for ???
             x = 'R';
@@ -64,7 +67,8 @@ public class TeamJAP implements Player {
         }
         //dealing with average dice where we are not betting first
         //and less that great dice
-        if (temp > 17 && s.betRequired() > 0 && temp < 22) {
+       
+        if (ourRoll > averageDice && playerBet > 0 && ourRoll < bestDice) {
             //If all others have rolled and their rolled die is lower than our lowest ‘S’ 
             //otherwise if we are above average roll
             for (int i = 0; i < s.getPlayersRemaining().size(); i++) {
@@ -81,44 +85,44 @@ public class TeamJAP implements Player {
 
         }
 
-        if (temp > 22) {
+        if (ourRoll > bestDice) {
             x = 'R';
         }
         //had to put a closing case in as I did run into the problem of it repeating with no end. 
-        if (temp > 27) {
+        if (ourRoll > greatDice) {
             x = 'S';
         }
 
 
         switch (x) {
             case 'R':
-                System.out.println("R(oll)");
+//                System.out.println("R(oll)");
                 return Action.ROLL;
             case 'S':
-                System.out.println(" S(howdown)");
+//                System.out.println(" S(howdown)");
                 return Action.SHOWDOWN;
             case 'F':
             default:
-                System.out.println("F(old)");
+//                System.out.println("F(old)");
                 return Action.FOLD;
         }
     }
 
     @Override
     public Action actAtShowdown(State s, int[] dice) {
-        int temp = 0;
+        int ourRoll = 0;
         for (int i = 0; i < dice.length; i++) {
-            temp += dice[i];
+            ourRoll += dice[i];
 
         }
-        System.out.println(temp + "&&&&");
-        if (temp <= 19) {
-            return Action.FOLD;
-        }else if( temp >= 20 ){
+//        System.out.println(ourRoll + "&&&&");
+        if (ourRoll <= 19) {
+            return Action.EXIT;
+        }else if( ourRoll >= 20 ){
         return Action.STAY;
         }
         
-        return Action.FOLD;
+        return Action.EXIT;
     }
 
 }

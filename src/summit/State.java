@@ -99,9 +99,9 @@ public class State {
     int[] getBets() {
         return bets;
     }
-    
-      public int getCurrentPlayer() {
-        return currentPlayer;
-    }
+//    
+//      public int getCurrentPlayer() {
+//        return currentPlayer;
+//    }
 
 }

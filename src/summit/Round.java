@@ -50,7 +50,7 @@ public class Round {
     }
 
     private int playRound() {
-       
+        
         s.currentPlayer = s.playersRemaining.remove(0);
         
         // If everyone but the current player has folded it's like a showdown.
